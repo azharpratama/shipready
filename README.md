@@ -88,6 +88,9 @@ npx -y skills add DietrichGebert/ponytail --skill ponytail --agent '*' --yes
 # Caveman (Token Saver - MANDATORY)
 npx -y skills add JuliusBrussee/caveman --skill caveman --agent '*' --yes
 
+# Frontend Design Taste
+npx -y skills add https://github.com/Leonxlnx/taste-skill --skill design-taste-frontend --agent '*' --yes
+
 # InsForge Agent Skills
 npx -y skills add https://github.com/insforge/agent-skills --skill insforge --agent '*' --yes
 npx -y skills add https://github.com/insforge/agent-skills --skill insforge-cli --agent '*' --yes
