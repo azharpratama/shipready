@@ -6,11 +6,6 @@ export default defineConfig({
     globals: true,
     include: ["src/**/*.test.{ts,tsx}", "tests/unit/**/*.test.{ts,tsx}"],
     passWithNoTests: true,
-    poolOptions: {
-      workers: {
-        wrangler: { configPath: "./wrangler.jsonc" },
-      },
-    },
   },
   resolve: {
     alias: {

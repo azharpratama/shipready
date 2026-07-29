@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Ultimate Starter Kit",
-  description: "Next.js Edge + Cloudflare + Neon + Drizzle + BetterAuth",
+  description: "Next.js + InsForge + BetterAuth",
 };
 
 export default function RootLayout({

@@ -7,22 +7,22 @@
 
 ## 🏗 Architecture & Stack
 - **Frontend:** Next.js App Router (React, Tailwind CSS, Zustand)
-- **Backend/Edge:** Cloudflare Pages/Workers (`workerd` runtime)
-- **Database:** Neon (Serverless Postgres) + Drizzle ORM
-- **Auth:** BetterAuth (Drizzle Adapter)
-- **Storage:** Cloudflare R2 (S3-compatible via `src/lib/storage.ts`)
+- **Backend:** InsForge BaaS (Postgres, Storage, Realtime, Functions, AI Gateway)
+- **Database:** InsForge Managed Postgres + Drizzle ORM (`drizzle-orm/node-postgres`)
+- **Auth:** BetterAuth (`better_auth` schema) + JWT Bridge to InsForge RLS
+- **Storage:** InsForge Storage (`@insforge/sdk`)
 
 ## 📂 Directory Structure Rules
 - `src/app/`: Next.js App Router pages and API routes.
 - `src/components/`: Reusable, stateless UI components.
-- `src/db/schema.ts`: SINGLE source of truth for database schema & auth tables.
-- `src/db/index.ts`: Stateless `neon-http` database client export (`db`).
-- `src/lib/`: Utility functions and storage adapters (`storage.ts`, `auth.ts`).
+- `src/db/schema.ts`: Application database schema definitions.
+- `src/db/index.ts`: Drizzle ORM `pg` Pool client export (`db`).
+- `src/lib/`: InsForge client/server SDK helpers and auth configuration (`insforge.ts`, `insforge.server.ts`, `auth.ts`).
 
 ## 💾 Database Schema (High-Level)
-- **User / Session / Account / Verification:** Standard BetterAuth core schema.
+- **User / Session / Account / Verification:** Standard BetterAuth core schema in `better_auth` schema.
 - [TODO: Document additional custom domain models/entities here]
 
 ## 🚧 Current Status & Active Decisions
-- [TODO: Add architectural decisions with rationale]
+- **Stack Migration:** Replaced Cloudflare & Neon with InsForge backend stack.
 - **Active Task:** Bootstrapping project architecture.

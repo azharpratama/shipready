@@ -22,6 +22,6 @@
     "lineWidth": 100
   },
   "files": {
-    "ignore": ["node_modules", ".next", ".wrangler", "dist"]
+    "ignore": ["node_modules", ".next", "dist"]
   }
 }

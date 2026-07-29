@@ -1,48 +1,48 @@
-# Agent Directives: Ultimate Stack (Next.js Edge + Cloudflare + Neon + Drizzle + BetterAuth)
+# Agent Directives: Ultimate Stack (Next.js + InsForge + Drizzle + BetterAuth)
 
-**Architecture:** Next.js App Router -> Cloudflare Pages/Workers (`workerd`) -> Neon (Postgres) -> Drizzle ORM -> BetterAuth -> Cloudflare R2/KV/AI
+**Architecture:** Next.js App Router -> InsForge BaaS (Postgres) -> Drizzle ORM -> BetterAuth
 
 ---
 
 ## 1. Core Philosophy
-- **Agent-First & GUI-less:** No web dashboard clicking. Manage all infrastructure programmatically (`wrangler`, `drizzle-kit`, `neonctl`).
-- **Single Source of Truth:** Read and maintain `docs/PROJECT_KNOWLEDGE.md` for project context, schema changes, and active decisions. Update it when making architectural shifts.
-- **Skills:** Leverage skills in `.agents/skills/` (or `.claude/skills/`) for domain-specific tasks. Available skills: `cloudflare`, `wrangler`, `workers-best-practices`, `neon-postgres`, `neon-postgres-branches`, `ponytail`, `caveman`.
-- **Environment Parity:** Local dev must mirror production using `wrangler pages dev` and local Postgres/Docker.
+- **Agent-First & GUI-less:** Manage infrastructure programmatically (`insforge`, `@better-auth/cli`, `drizzle-kit`).
+- **Single Source of Truth:** `src/db/schema.ts` is the single code-first source of truth for application database tables. Maintain `docs/PROJECT_KNOWLEDGE.md` for project context and architectural shifts.
+- **Mandatory Skills:** `ponytail` (minimalist YAGNI code) and `caveman` (terse, token-efficient output) are MANDATORY for all agent responses. Leverage domain skills in `.agents/skills/` (`insforge`, `insforge-cli`, `insforge-debug`, `insforge-integrations`).
 - **Simplicity (YAGNI):** Favor native primitives, reuse existing code, actively delete dead code. Avoid unnecessary abstractions.
 
 ---
 
-## 2. Runtime Environment & Edge Constraints
-- **CRITICAL:** Target environment is Cloudflare Edge (`workerd`). Standard Node.js runtime is NOT available.
-- **NEVER** import Node.js native TCP/filesystem modules (`fs`, `path`, `net`, `tls`, `dns`) in Edge routes.
-- **Route Configuration:** Include `export const runtime = "edge";` at the top of all Next.js API routes, server actions, or layouts accessing Edge/DB primitives (unless using `@opennextjs/cloudflare` Node compatibility mode).
-- **Env Variables:** Access via `process.env`. Never hardcode secrets. Never assume `process.env` persistence across isolate re-initializations.
+## 2. Database, Schema & Auth Strategy
+- **Schema Management (Push-Based):** Define tables in `src/db/schema.ts`. Sync changes to InsForge Postgres using `npm run db:push` (`drizzle-kit push`). Do NOT create duplicate migration runners.
+- **Server Queries (Drizzle):** Use `db` from `src/db/index.ts` (`drizzle-orm/node-postgres`). Because direct TCP queries run with DB admin privileges, **ALWAYS** scope user queries explicitly with `.where(eq(table.userId, session.user.id))`.
+- **Client & RLS Operations (InsForge SDK):** Use `@insforge/sdk` (`useInsforgeClient()`) for client-side queries, storage uploads, realtime pub/sub, and AI gateway calls. The BetterAuth JWT bridge automatically attaches `sub` claim for Postgres Row Level Security (`auth.uid()`).
+- **Auth Storage:** BetterAuth manages user sessions in `better_auth` schema (isolated from `public` PostgREST data API).
 
 ---
 
-## 3. Database & Auth
-- **Database Driver:** ALWAYS use `@neondatabase/serverless` with `drizzle-orm/neon-http` for stateless HTTP queries (see `src/db/index.ts`). Do NOT use standard `pg`/`postgres` TCP drivers — they will crash on the Edge.
-- **Transactions:** For multi-query transactions requiring WebSockets, use `Pool` from `@neondatabase/serverless` with `drizzle-orm/neon-serverless`. Avoid WebSocket Pool for standard REST/API endpoints to prevent isolate exhaustion.
-
-
----
-
-## 4. Extended Edge Primitives
-- **R2 Storage:** Use `src/lib/storage.ts` S3-compatible SDK abstraction for all file uploads. Do NOT call `env.R2_BUCKET` bindings directly in routes.
-- **Optional Primitives:** KV (caching/rate limits), Queues (async jobs), Workers AI (native LLM), PostHog, Resend.
-
----
-
-## 5. Testing Strategy
-- **Database:** Do not hit live Neon in unit tests. Use a local Docker `postgres` instance with `drizzle-kit push`.
-- **E2E:** To test Edge-specific behavior, configure Playwright to run `npx wrangler pages dev`.
-
----
-
-## 6. Development Standards
+## 3. Development Standards
+- **Setup Command:** Run `npm run setup` to bootstrap database schema, apply BetterAuth tables, and push Drizzle schema.
 - **Commits:** ALWAYS use Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`). Never write generic messages.
-
-- **State & Styling:** Use Zustand for client state (avoid Context API re-render hell). Use standard Tailwind CSS utility classes. Do NOT introduce bloated UI component libraries unless explicitly requested.
+- **State & Styling:** Use Zustand for client state. Use standard Tailwind CSS utility classes.
 - **Scratch & Planning:** Use `docs/agent-scratchpad.md` to plan complex migrations or outline architecture before generating code.
-- **Diagnostics:** See `docs/TROUBLESHOOTING.md` for common edge runtime error fixes.
+
+<!-- INSFORGE:START -->
+## InsForge backend
+
+This project uses [InsForge](https://insforge.dev): an all-in-one, open-source Postgres-based backend (BaaS) that gives this app a database, authentication, file storage, edge functions, realtime, an AI model gateway, and payments through one platform.
+
+- **Project:** **starter-kit** (API base `https://n2u7iwp6.us-east.insforge.app`)
+- **Skills:** these InsForge skills are installed for supported coding agents. Reach for them before implementing any InsForge feature instead of guessing the API:
+  - `insforge`: app code with the `@insforge/sdk` client (database CRUD, auth, storage, edge functions, realtime, AI, email, and Stripe payments).
+  - `insforge-cli`: backend and infrastructure via the `insforge` CLI (projects, SQL, migrations, RLS policies, storage buckets, functions, secrets, payment setup, schedules, deploys).
+  - `insforge-debug`: diagnosing failures (SDK/HTTP errors, RLS denials, auth and OAuth issues) and running security or performance audits.
+  - `insforge-integrations`: wiring external auth providers (Clerk, Auth0, WorkOS, Better Auth, etc.) for JWT-based RLS, or the OKX x402 payment facilitator.
+  - `find-skills`: discovering additional skills on demand.
+- **Credentials:** app code reads keys from `.env.local`; the CLI reads `.insforge/project.json`. Never hardcode or commit keys.
+
+Key patterns:
+
+- Database inserts take an array: `insert([{ ... }])`.
+- Reference users with `auth.users(id)`; use `auth.uid()` in RLS policies.
+- For storage uploads, persist both the returned `url` and `key`.
+<!-- INSFORGE:END -->

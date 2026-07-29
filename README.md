@@ -1,6 +1,6 @@
 # Ultimate Agent-First Starter Kit
 
-> **A GUI-less, agent-native, serverless Edge starter template built for modern AI coding workflows.**
+> **A GUI-less, agent-native starter template built for modern AI coding workflows.**
 
 Designed to be operated seamlessly by developers using AI coding agents (Antigravity IDE, Claude Code, Cursor, Windsurf, Codex, etc.) or manually via CLI tools.
 
@@ -8,12 +8,10 @@ Designed to be operated seamlessly by developers using AI coding agents (Antigra
 
 ## 🏗 Tech Stack
 
-- **Framework:** Next.js (App Router, Edge Runtime)
-- **Deployment & Edge:** Cloudflare Pages / Workers (`workerd`)
-- **Database:** Neon Serverless Postgres
-- **ORM & Schema:** Drizzle ORM (`drizzle-orm/neon-http`)
-- **Authentication:** BetterAuth (Drizzle Adapter)
-- **Storage:** Cloudflare R2 (S3-compatible abstraction)
+- **Framework:** Next.js (App Router)
+- **Backend-as-a-Service:** InsForge (Postgres, Storage, Realtime, Edge Functions, AI Gateway)
+- **ORM & Schema Management:** Drizzle ORM (`drizzle-orm/node-postgres` + `drizzle-kit push`)
+- **Authentication:** BetterAuth (`better_auth` Postgres schema + JWT bridge to InsForge RLS)
 - **State Management:** Zustand
 - **Styling:** Tailwind CSS
 - **Code Quality:** Biome (Linter & Formatter) + TypeScript (`strict: true`)
@@ -25,8 +23,7 @@ Designed to be operated seamlessly by developers using AI coding agents (Antigra
 
 - **Node.js** >= 18.x
 - **npm** or **pnpm**
-- **Neon account** (for Postgres `DATABASE_URL`)
-- **Cloudflare account** (for Pages/Workers deployment & R2 storage)
+- **InsForge CLI** (`npx @insforge/cli`)
 
 ---
 
@@ -42,56 +39,19 @@ npm install
 cp .env.example .env.local
 ```
 
-Edit `.env.local` with your database URL and secrets.
+### 2. Database & Auth Setup
 
-<details>
-<summary><b>🛠 How to get your API Keys</b></summary>
-
-<br>
-
-**1. Neon Postgres (`DATABASE_URL`)**:
-- Create a project at [Neon.tech](https://neon.tech).
-- On your project dashboard, copy the **Connection String** for your default branch.
-- Paste it as `DATABASE_URL` in `.env.local` (make sure it ends with `?sslmode=require`).
-
-**2. Cloudflare R2 Storage (`S3_*`)**:
-- Go to the [Cloudflare Dashboard](https://dash.cloudflare.com) -> **R2** -> **Create bucket**. Note the bucket name for `S3_BUCKET_NAME`.
-- Go to **Manage R2 API Tokens** -> **Create API token**.
-- Give the token **Object Read & Write** permissions.
-- Copy the **Access Key ID**, **Secret Access Key**, and **Jurisdiction-specific endpoint** into your `.env.local`.
-
-**3. BetterAuth Secret**:
-- Run `npx @better-auth/cli secret` in your terminal to automatically generate and append a secure key to your `.env.local` file.
-</details>
-
-### 2. Database Sync
+Runs InsForge bootstrap, BetterAuth migrations, and pushes `src/db/schema.ts` to Postgres in one step:
 
 ```bash
-# Push schema to Neon
-npm run db:push
+npm run setup
 ```
 
 ### 3. Run Development Server
 
 ```bash
-# Local Next.js dev server
 npm run dev
 ```
-
-```bash
-# Run local Cloudflare Edge runtime simulation (OpenNext)
-npm run dev:edge
-```
-
-> **Note:** The `dev:edge` script uses `@opennextjs/cloudflare` to compile your Next.js app and run it inside Cloudflare's `workerd` runtime via Wrangler. This ensures 100% parity with your production environment before deploying.
-
----
-
-## 🤖 Bootstrapping with AI Agents
-
-When opening this project in an AI coding agent (Cursor, Antigravity, Claude Code, etc.), paste this prompt:
-
-> "I am building a new application using this starter kit. Please read `docs/PROJECT_KNOWLEDGE.md` and `AGENTS.md`. Help me refine the schema in `src/db/schema.ts` and set up our core features."
 
 ---
 
@@ -99,40 +59,38 @@ When opening this project in an AI coding agent (Cursor, Antigravity, Claude Cod
 
 | Command | Description |
 |---|---|
+| `npm run setup` | Bootstraps DB schema, applies BetterAuth & pushes Drizzle schema |
 | `npm run dev` | Starts Next.js dev server |
 | `npm run build` | Builds application |
+| `npm run start` | Starts Next.js production server |
 | `npm run lint` | Runs Biome code format & lint checks |
 | `npm run lint:fix` | Automatically fixes formatting & lint issues |
 | `npm run typecheck` | Runs TypeScript type checking |
-| `npm run db:push` | Pushes Drizzle schema changes directly to Neon |
-| `npm run db:generate` | Generates SQL migration files |
-| `npm run db:migrate` | Applies SQL migrations to production |
-| `npm run db:studio` | Launches Drizzle visual database browser |
 | `npm run test` | Runs Vitest unit & integration tests |
 | `npm run test:e2e` | Runs Playwright end-to-end tests |
-| `npm run dev:edge` | Simulates Cloudflare Edge runtime locally |
-| `npm run build:edge` | Builds OpenNext Cloudflare worker |
-| `npm run preview:edge`| Previews built Cloudflare worker locally |
+| `npm run db:push` | Pushes `src/db/schema.ts` changes directly to InsForge Postgres |
+| `npm run db:studio` | Launches Drizzle visual database browser |
+| `npm run auth:generate` | Generates BetterAuth client code |
+| `npm run auth:secret` | Generates BetterAuth secret |
+| `npm run auth:migrate` | Applies BetterAuth schema migrations |
+| `npm run prepare` | Installs Husky git hooks |
 
 ---
 
-## 🔧 Agent Skills Setup
+## 🔧 Agent Directives & Mandatory Skills
 
-Install or update the agent skills used by this project. These commands work across IDEs (Antigravity, Cursor, Windsurf, Claude Code).
+Agent interactions strictly enforce **Ponytail** (minimalist YAGNI code) and **Caveman** (terse output):
 
 ```bash
-# Cloudflare
-npx -y skills add cloudflare/skills --skill cloudflare --agent '*' --yes
-npx -y skills add cloudflare/skills --skill wrangler --agent '*' --yes
-npx -y skills add cloudflare/skills --skill workers-best-practices --agent '*' --yes
-
-# Neon
-npx -y skills add neondatabase/agent-skills --skill neon-postgres --agent '*' --yes
-npx -y skills add neondatabase/agent-skills --skill neon-postgres-branches --agent '*' --yes
-
-# Ponytail (Lazy Senior Dev Mindset)
+# Ponytail (Lazy Senior Dev Mindset - MANDATORY)
 npx -y skills add DietrichGebert/ponytail --skill ponytail --agent '*' --yes
 
-# Caveman (Token Saver)
+# Caveman (Token Saver - MANDATORY)
 npx -y skills add JuliusBrussee/caveman --skill caveman --agent '*' --yes
+
+# InsForge Agent Skills
+npx -y skills add https://github.com/insforge/agent-skills --skill insforge --agent '*' --yes
+npx -y skills add https://github.com/insforge/agent-skills --skill insforge-cli --agent '*' --yes
+npx -y skills add https://github.com/insforge/agent-skills --skill insforge-debug --agent '*' --yes
+npx -y skills add https://github.com/insforge/agent-skills --skill insforge-integrations --agent '*' --yes
 ```

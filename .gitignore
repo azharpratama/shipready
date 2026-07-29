@@ -8,9 +8,6 @@ out/
 build/
 dist/
 
-# Cloudflare / Wrangler
-.wrangler/
-
 # Environment files
 .env
 .env.local
@@ -46,9 +43,6 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Vercel
-.vercel
-
 # Testing (Vitest / Coverage / Playwright)
 coverage/
 test-results/
@@ -58,3 +52,16 @@ playwright/.cache/
 
 # Misc
 .drizzle/
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.augment
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf
