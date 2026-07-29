@@ -1,0 +1,2 @@
+npm run typecheck
+npx biome check --write --no-errors-on-unmatched --staged

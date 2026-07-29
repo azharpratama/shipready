@@ -53,18 +53,3 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at"),
 });
-
-// ==========================================
-// Application Domain Tables (Example)
-// ==========================================
-
-export const posts = pgTable("posts", {
-  id: text("id").primaryKey(),
-  title: text("title").notNull(),
-  content: text("content"),
-  authorId: text("author_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});

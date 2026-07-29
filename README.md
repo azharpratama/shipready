@@ -17,7 +17,7 @@ Designed to be operated seamlessly by developers using AI coding agents (Antigra
 - **State Management:** Zustand
 - **Styling:** Tailwind CSS
 - **Code Quality:** Biome (Linter & Formatter) + TypeScript (`strict: true`)
-- **Testing:** Vitest
+- **Testing:** Vitest (Unit/Integration) + Playwright (E2E)
 
 ---
 
@@ -113,3 +113,26 @@ When opening this project in an AI coding agent (Cursor, Antigravity, Claude Cod
 | `npm run dev:edge` | Simulates Cloudflare Edge runtime locally |
 | `npm run build:edge` | Builds OpenNext Cloudflare worker |
 | `npm run preview:edge`| Previews built Cloudflare worker locally |
+
+---
+
+## 🔧 Agent Skills Setup
+
+Install or update the agent skills used by this project. These commands work across IDEs (Antigravity, Cursor, Windsurf, Claude Code).
+
+```bash
+# Cloudflare
+npx -y skills add cloudflare/skills --skill cloudflare --agent '*' --yes
+npx -y skills add cloudflare/skills --skill wrangler --agent '*' --yes
+npx -y skills add cloudflare/skills --skill workers-best-practices --agent '*' --yes
+
+# Neon
+npx -y skills add neondatabase/agent-skills --skill neon-postgres --agent '*' --yes
+npx -y skills add neondatabase/agent-skills --skill neon-postgres-branches --agent '*' --yes
+
+# Ponytail (Lazy Senior Dev Mindset)
+npx -y skills add DietrichGebert/ponytail --skill ponytail --agent '*' --yes
+
+# Caveman (Token Saver)
+npx -y skills add JuliusBrussee/caveman --skill caveman --agent '*' --yes
+```

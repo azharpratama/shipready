@@ -17,7 +17,10 @@
     "test:e2e": "playwright test",
     "build:edge": "opennextjs-cloudflare build",
     "preview:edge": "opennextjs-cloudflare preview",
-    "dev:edge": "npm run build:edge && npm run preview:edge"
+    "dev:edge": "npm run build:edge && npm run preview:edge",
+    "auth:generate": "@better-auth/cli generate",
+    "auth:secret": "@better-auth/cli secret",
+    "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
+    "@cloudflare/vitest-pool-workers": "^0.19.0",
     "@cloudflare/workers-types": "^5.20260729.1",
     "@opennextjs/cloudflare": "^1.20.2",
     "@playwright/test": "^1.62.0",
@@ -42,6 +46,7 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.20",
     "drizzle-kit": "^0.31.0",
+    "husky": "^9.1.7",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
