@@ -1,0 +1,51 @@
+{
+  "name": "starter-kit",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "build:edge": "opennextjs-cloudflare build",
+    "preview:edge": "opennextjs-cloudflare preview",
+    "dev:edge": "npm run build:edge && npm run preview:edge"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.600.0",
+    "@neondatabase/serverless": "^0.10.1",
+    "better-auth": "^1.1.0",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.2",
+    "lucide-react": "^0.428.0",
+    "next": "^15.5.22",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^2.5.2",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@cloudflare/workers-types": "^5.20260729.1",
+    "@opennextjs/cloudflare": "^1.20.2",
+    "@playwright/test": "^1.62.0",
+    "@types/node": "^20.14.12",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.31.0",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "wrangler": "^4.115.0"
+  }
+}
